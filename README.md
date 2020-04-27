@@ -1,3 +1,4 @@
+![Screenshot](img.png)
 
 # Super Average Tetris
 
