@@ -1,0 +1,10 @@
+[package]
+name = "tetris"
+version = "0.1.0"
+authors = ["prk3 <kukulski.przemyslaw@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.7.3"
+nix = "0.17.0"
+
