@@ -16,6 +16,8 @@ use board::{Board, BlockPosition};
 use block::Block;
 use generator::BlockGenerator;
 
+const TICK_DURATION: u64 = 500;
+
 #[derive(Debug)]
 enum Update {
     Down,
@@ -86,6 +88,10 @@ fn make_update_receiver() -> std::sync::mpsc::Receiver<Update> {
     input_rx
 }
 
+fn remaining_time(total: Duration, passed: Duration) -> Duration {
+    total.checked_sub(passed).unwrap_or(Duration::from_millis(0))
+}
+
 fn main() {
     let update_receiver = make_update_receiver();
 
@@ -101,7 +107,7 @@ fn main() {
         block: initial_block.block,
         block_color: initial_block.block_color,
         block_position: initial_block_position,
-        remaining_input_time: Duration::from_millis(1_000),
+        remaining_input_time: Duration::from_millis(TICK_DURATION),
         generator: initial_block.generator,
         end: false,
     });
@@ -124,7 +130,7 @@ fn main() {
 
                 GameState {
                     block_position: if can_move_left { tested_position } else { state.block_position },
-                    remaining_input_time: state.remaining_input_time - time.elapsed(),
+                    remaining_input_time: remaining_time(state.remaining_input_time, time.elapsed()),
                     ..state
                 }
             }
@@ -137,7 +143,7 @@ fn main() {
 
                 GameState {
                     block_position: if can_move_right { tested_position } else { state.block_position },
-                    remaining_input_time: state.remaining_input_time - time.elapsed(),
+                    remaining_input_time: remaining_time(state.remaining_input_time, time.elapsed()),
                     ..state
                 }
             }
@@ -151,12 +157,12 @@ fn main() {
                 if can_move_down {
                     GameState {
                         block_position: tested_position,
-                        remaining_input_time: Duration::from_millis(1_000),
+                        remaining_input_time: Duration::from_millis(TICK_DURATION),
                         ..state
                     }
                 } else {
                     GameState {
-                        remaining_input_time: state.remaining_input_time - time.elapsed(),
+                        remaining_input_time: remaining_time(state.remaining_input_time, time.elapsed()),
                         ..state
                     }
                 }
@@ -167,7 +173,7 @@ fn main() {
 
                 GameState {
                     block: if can_rotate_left { rotated_block } else { state.block },
-                    remaining_input_time: state.remaining_input_time - time.elapsed(),
+                    remaining_input_time: remaining_time(state.remaining_input_time, time.elapsed()),
                     ..state
                 }
             }
@@ -177,7 +183,7 @@ fn main() {
 
                 GameState {
                     block: if can_rotate_right { rotated_block } else { state.block },
-                    remaining_input_time: state.remaining_input_time - time.elapsed(),
+                    remaining_input_time: remaining_time(state.remaining_input_time, time.elapsed()),
                     ..state
                 }
             }
@@ -191,7 +197,7 @@ fn main() {
                 if can_be_moved_down {
                     GameState {
                         block_position: tested_position,
-                        remaining_input_time: Duration::from_millis(1_000),
+                        remaining_input_time: Duration::from_millis(TICK_DURATION),
                         ..state
                     }
                 } else {
@@ -213,7 +219,7 @@ fn main() {
                         block: next_block.block,
                         block_color: next_block.block_color,
                         block_position: new_position,
-                        remaining_input_time: Duration::from_millis(1_000),
+                        remaining_input_time: Duration::from_millis(TICK_DURATION),
                         generator: next_block.generator,
                     }
                 }
