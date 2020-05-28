@@ -9,7 +9,6 @@ use std::borrow::Borrow;
 
 mod board;
 mod block;
-mod blocks;
 mod generator;
 
 use board::{Board, BlockPosition};
@@ -30,7 +29,7 @@ enum Update {
 
 struct GameState {
     board: Board,
-    block: Box<dyn Block>,
+    block: Block,
     block_position: BlockPosition,
     block_color: u8,
     remaining_input_time: Duration,
@@ -98,8 +97,8 @@ fn main() {
     let initial_board = Board::new(10, 20);
     let initial_block = BlockGenerator::new().next();
     let initial_block_position = BlockPosition {
-        x: (initial_board.width() as i32 - initial_block.block.width() as i32) / 2,
-        y: 0,
+        x: (initial_board.width() / 2) as i32 + initial_block.block.start_offset_x() as i32,
+        y: initial_block.block.start_offset_y() as i32,
     };
 
     let mut state = drawn(GameState {
@@ -209,8 +208,8 @@ fn main() {
                     let compressed_board = merged_board.compress();
                     let next_block = state.generator.next();
                     let new_position = BlockPosition {
-                        x: (state.board.width() as i32 - next_block.block.width() as i32) / 2,
-                        y: 0,
+                        x: (state.board.width() / 2) as i32 + next_block.block.start_offset_x() as i32,
+                        y: next_block.block.start_offset_y() as i32,
                     };
 
                     GameState {

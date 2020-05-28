@@ -1,7 +1,6 @@
 use rand::seq::SliceRandom;
 
-use crate::block::Block;
-use crate::blocks::*;
+use crate::block::*;
 
 pub struct BlockGenerator {
     options: [u8; 7],
@@ -11,7 +10,7 @@ pub struct BlockGenerator {
 }
 
 pub struct BlockGeneratorResult {
-    pub block: Box<dyn Block>,
+    pub block: Block,
     pub block_color: u8,
     pub generator: BlockGenerator,
 }
@@ -48,15 +47,15 @@ impl BlockGenerator {
         }
     }
 
-    fn block_from_option(&self, option: u8) -> Box<dyn Block> {
+    fn block_from_option(&self, option: u8) -> Block {
         match option {
-            0 => Box::new(i::I::first_rotation()),
-            1 => Box::new(l::L::first_rotation()),
-            2 => Box::new(j::J::first_rotation()),
-            3 => Box::new(s::S::first_rotation()),
-            4 => Box::new(z::Z::first_rotation()),
-            5 => Box::new(t::T::first_rotation()),
-            _ => Box::new(q::Q::first_rotation()),
+            0 => Block::new(BlockType::I),
+            1 => Block::new(BlockType::L),
+            2 => Block::new(BlockType::J),
+            3 => Block::new(BlockType::S),
+            4 => Block::new(BlockType::Z),
+            5 => Block::new(BlockType::T),
+            _ => Block::new(BlockType::Q),
         }
     }
 

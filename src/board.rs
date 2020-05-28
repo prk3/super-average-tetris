@@ -42,17 +42,15 @@ impl Board {
         }
     }
 
-    pub fn with_block(&self, block: &dyn Block, position: BlockPosition, color: u8) -> Board {
-        let block_width = block.width();
-        let block_height = block.height();
+    pub fn with_block(&self, block: &Block, position: BlockPosition, color: u8) -> Board {
         let block_at_abs = |x, y| {
             let block_x = x as i32 - position.x;
             let block_y = y as i32 - position.y;
 
             if block_x >= 0
-                && block_x < block_width as i32
+                && block_x < 4
                 && block_y >= 0
-                && block_y < block_height as i32 {
+                && block_y < 4 {
                 block.at(block_x as usize, block_y as usize)
             } else {
                 0
@@ -72,10 +70,10 @@ impl Board {
         }
     }
 
-    pub fn block_collides(&self, block: &dyn Block, position: BlockPosition) -> bool {
+    pub fn block_collides(&self, block: &Block, position: BlockPosition) -> bool {
         // not all blocks can be moved without overlap
-        !(0..block.height()).all(|y| {
-            (0..block.width()).all(|x| {
+        !(0..4).all(|y| {
+            (0..4).all(|x| {
                 let board_x = x as i32 + position.x;
                 let board_y = y as i32 + position.y;
                 let block_value = block.at(x, y);
